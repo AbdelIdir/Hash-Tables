@@ -42,6 +42,8 @@ class HashTable:
         return self.hash_djb2(key) % self.capacity
 
     def put(self, key, value):
+
+        index = self.hash_index(key)
         """
         Store the value with the given key.
 
