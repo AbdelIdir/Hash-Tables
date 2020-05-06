@@ -27,6 +27,7 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
+
     def hash_djb2(self, key):
         hash = 5381
         for x in key:
@@ -38,8 +39,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        # return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.hash_djb2(key) % self.capacity
 
     def put(self, key, value):
         """
