@@ -67,6 +67,7 @@ class HashTable:
             prev_node.next = HashTableEntry(key, value)
 
         load_factor = self.usage / len(self.storage)
+
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -99,6 +100,13 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        node = self.storage[index]
+        while node:
+            if node.key == key:
+                return node.value
+            else:
+                node = node.next
 
     def resize(self):
         """
