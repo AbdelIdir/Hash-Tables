@@ -19,6 +19,7 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity
+        self.usage = 0
         self.storage = [None] * capacity
 
     def fnv1(self, key):
@@ -42,8 +43,6 @@ class HashTable:
         return self.hash_djb2(key) % self.capacity
 
     def put(self, key, value):
-
-        index = self.hash_index(key)
         """
         Store the value with the given key.
 
@@ -51,6 +50,26 @@ class HashTable:
 
         Implement this.
         """
+
+        index = self.hash_index(key)
+        if not self.storage[index]:
+            self.storage[index] = HashTableEntry(key, value)
+            self.usage += 1
+        else:
+            node = self.storage[index]
+            while node:
+                if node.key == key:
+                    node.value = value
+                    return value
+                else:
+                    prev_node = node
+                    node = node.next
+            prev_node.next = HashTableEntry(key, value)
+
+        load_factor = self.usage / len(self.storage)
+
+
+    
 
     def delete(self, key):
         """
