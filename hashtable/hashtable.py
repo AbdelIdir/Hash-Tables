@@ -67,10 +67,6 @@ class HashTable:
             prev_node.next = HashTableEntry(key, value)
 
         load_factor = self.usage / len(self.storage)
-
-
-    
-
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -79,6 +75,21 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        if not self.storage[index]:
+            print("There is already nothing here")
+
+        else:
+            node = self.storage[index]
+            if not node.next:
+                self.storage[index] = None
+                self.usage -= 1
+
+            else:
+                while node.key != key:
+                    prev_node = node
+                    node = node.next
+                prev_node.next = node.next
 
     def get(self, key):
         """
