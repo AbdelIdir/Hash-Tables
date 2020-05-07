@@ -17,6 +17,11 @@ class HashTable:
     Implement this.
     """
 
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.usage = 0
+        self.storage = [None] * capacity
+
     def fnv1(self, key):
         """
         FNV-1 64-bit hash function
@@ -24,20 +29,18 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
-    def djb2(self, key):
-        """
-        DJB2 32-bit hash function
-
-        Implement this, and/or FNV-1.
-        """
+    def hash_djb2(self, key):
+        hash = 5381
+        for x in key:
+            hash = ((hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.hash_djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -48,6 +51,23 @@ class HashTable:
         Implement this.
         """
 
+        index = self.hash_index(key)
+        if not self.storage[index]:
+            self.storage[index] = HashTableEntry(key, value)
+            self.usage += 1
+        else:
+            node = self.storage[index]
+            while node:
+                if node.key == key:
+                    node.value = value
+                    return value
+                else:
+                    prev_node = node
+                    node = node.next
+            prev_node.next = HashTableEntry(key, value)
+
+        load_factor = self.usage / len(self.storage)
+
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -56,6 +76,21 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        if not self.storage[index]:
+            print("There is already nothing here")
+
+        else:
+            node = self.storage[index]
+            if not node.next:
+                self.storage[index] = None
+                self.usage -= 1
+
+            else:
+                while node.key != key:
+                    prev_node = node
+                    node = node.next
+                prev_node.next = node.next
 
     def get(self, key):
         """
@@ -65,6 +100,13 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        node = self.storage[index]
+        while node:
+            if node.key == key:
+                return node.value
+            else:
+                node = node.next
 
     def resize(self):
         """
@@ -73,6 +115,7 @@ class HashTable:
 
         Implement this.
         """
+
 
 if __name__ == "__main__":
     ht = HashTable(2)
